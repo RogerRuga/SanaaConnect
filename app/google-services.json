@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "555645391783",
+    "project_id": "sanaaconnect-3027b",
+    "storage_bucket": "sanaaconnect-3027b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555645391783:android:a1162a5755307a15f89c82",
+        "android_client_info": {
+          "package_name": "com.example.sanaaconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEc0Uu9GWWXbsglzt_EZ5DNp1LUpPtHqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

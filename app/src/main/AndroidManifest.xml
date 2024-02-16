@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SanaaConnect"
+        tools:targetApi="31">
+        <activity
+            android:name=".UpdateProfile"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight"/>
+        <activity
+            android:name=".UploadProfilePic"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight" />
+        <activity
+            android:name=".ForgotPassword"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterCreator"
+            android:exported="false" />
+        <activity
+            android:name=".CreatorLogin"
+            android:exported="false" />
+        <activity
+            android:name=".ProviderProfile"
+            android:exported="false" />
+        <activity
+            android:name=".ServicesHompage"
+            android:exported="false" />
+        <activity
+            android:name=".ProviderLogin"
+            android:exported="false" />
+        <activity
+            android:name=".ProviderRegistration"
+            android:exported="false" />
+        <activity
+            android:name=".JobsHompage"
+            android:exported="false" />
+        <activity
+            android:name=".CreatorProfile"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight" />
+        <activity
+            android:name=".AdminLogin"
+            android:exported="false" />
+        <activity
+            android:name=".OpportunityProviders"
+            android:exported="false" />
+        <activity
+            android:name=".CreatorRegistration"
+            android:exported="false" />
+        <activity
+            android:name=".CreatorWelcomePage"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Design.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>
