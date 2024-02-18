@@ -3,6 +3,7 @@ package com.example.sanaaconnect;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -163,7 +164,10 @@ public class UploadProfilePic extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.menu_refresh){
+        if (id == android.R.id.home){
+            NavUtils.navigateUpFromSameTask(UploadProfilePic.this);
+
+        } else if (id == R.id.menu_refresh){
             //refresh activity
             startActivity(getIntent());
             finish();
@@ -174,16 +178,18 @@ public class UploadProfilePic extends AppCompatActivity {
             startActivity(intent);
             finish();
 
-        }/*else if (id == R.id.menu_update_email) {
+        }else if (id == R.id.menu_update_email) {
             Intent intent = new Intent(UploadProfilePic.this, UpdateEmail.class);
             startActivity(intent);
         } else if (id == R.id.menu_change_password) {
             Intent intent = new Intent(UploadProfilePic.this, ChangePassword.class);
             startActivity(intent);
+            finish();
         } else if (id == R.id.menu_delete_profile) {
             Intent intent = new Intent(UploadProfilePic.this, DeleteProfile.class);
             startActivity(intent);
-        }*/else if (id == R.id.menu_logout) {
+            finish();
+        } else if (id == R.id.menu_logout) {
             authProfile.signOut();
             Toast.makeText(this, "Logged Out", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(UploadProfilePic.this, MainActivity.class);

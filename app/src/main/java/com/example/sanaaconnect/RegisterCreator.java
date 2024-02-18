@@ -228,8 +228,8 @@ public class RegisterCreator extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
 
 
-                                        /* //Open user profile
-                                        Intent intent = new Intent(CreatorRegistration.this, CreatorProfile.class);
+                                         //Open user profile
+                                        Intent intent = new Intent(RegisterCreator.this, CreatorProfile.class);
 
                                         //To prevent user from returning back to register activity on pressing back button after registration
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

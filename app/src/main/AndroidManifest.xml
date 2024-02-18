@@ -13,22 +13,78 @@
         android:theme="@style/Theme.SanaaConnect"
         tools:targetApi="31">
         <activity
+            android:name=".Projects"
+            android:exported="false" />
+        <activity
+            android:name=".CreatorPortfolio"
+            android:exported="false" />
+        <activity
+            android:name=".RegistrationPage"
+            android:exported="false" />
+        <activity
+            android:name=".ProviderWelcomePage"
+            android:exported="false" />
+        <activity
+            android:name=".DeleteProfile"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".ChangePassword"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CreatorProfile" />
+        </activity>
+        <activity
+            android:name=".UpdateEmail"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CreatorProfile" />
+        </activity>
+        <activity
             android:name=".UpdateProfile"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.DayNight"/>
+            android:theme="@style/Theme.AppCompat.DayNight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CreatorProfile" />
+        </activity>
         <activity
             android:name=".UploadProfilePic"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.DayNight" />
+            android:theme="@style/Theme.AppCompat.DayNight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CreatorProfile" />
+        </activity>
         <activity
             android:name=".ForgotPassword"
-            android:exported="false" />
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
         <activity
             android:name=".RegisterCreator"
-            android:exported="false" />
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CreatorWelcomePage" />
+        </activity>
         <activity
             android:name=".CreatorLogin"
-            android:exported="false" />
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CreatorWelcomePage" />
+        </activity>
         <activity
             android:name=".ProviderProfile"
             android:exported="false" />
@@ -47,7 +103,11 @@
         <activity
             android:name=".CreatorProfile"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.DayNight" />
+            android:theme="@style/Theme.AppCompat.DayNight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CreatorWelcomePage" />
+        </activity>
         <activity
             android:name=".AdminLogin"
             android:exported="false" />
@@ -59,7 +119,11 @@
             android:exported="false" />
         <activity
             android:name=".CreatorWelcomePage"
-            android:exported="false" />
+            android:exported="false">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="false" />

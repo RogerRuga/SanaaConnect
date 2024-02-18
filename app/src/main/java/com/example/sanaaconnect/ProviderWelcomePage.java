@@ -8,20 +8,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class CreatorWelcomePage extends AppCompatActivity {
+public class ProviderWelcomePage extends AppCompatActivity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_creator_welcome_page);
+        setContentView(R.layout.activity_provider_welcome_page);
 
         //Open Login Activity
         Button buttonLogin = findViewById(R.id.button_login);
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CreatorWelcomePage.this, CreatorLogin.class);
+                Intent intent = new Intent(ProviderWelcomePage.this, ProviderLogin.class);
                 startActivity(intent);
             }
         });
@@ -32,7 +32,7 @@ public class CreatorWelcomePage extends AppCompatActivity {
         textViewRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CreatorWelcomePage.this, RegisterCreator.class);
+                Intent intent = new Intent(ProviderWelcomePage.this, ProviderRegistration.class);
                 startActivity(intent);
 
             }

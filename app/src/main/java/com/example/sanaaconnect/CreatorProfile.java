@@ -1,10 +1,6 @@
 package com.example.sanaaconnect;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +12,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
 public class CreatorProfile extends AppCompatActivity {
 
     private TextView textViewWelcome, textViewFullName, textViewEmail, textViewDoB, textViewGender, textViewMobile;
@@ -32,6 +35,7 @@ public class CreatorProfile extends AppCompatActivity {
     private String fullName, email, doB, gender, mobile;
     private ImageView imageview;
     private FirebaseAuth authProfile;
+    private SwipeRefreshLayout swipeContainer;
 
 
     @Override
@@ -39,7 +43,12 @@ public class CreatorProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creator_profile);
 
-        getSupportActionBar().setTitle("Your Profile");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Your Profile");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
+        swipeToRefresh();
 
         textViewWelcome = findViewById(R.id.textView_show_welcome);
         textViewFullName = findViewById(R.id.textView_show_full_name);
@@ -47,16 +56,13 @@ public class CreatorProfile extends AppCompatActivity {
         textViewDoB = findViewById(R.id.textView_show_dob);
         textViewGender = findViewById(R.id.textView_show_gender);
         textViewMobile = findViewById(R.id.textView_show_mobile);
-        progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progress_bar);
 
         //Set onClickListener on ImageView to open Upload Profile Pic Activity
         imageview = findViewById(R.id.imageView_profile_dp);
-        imageview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CreatorProfile.this, UploadProfilePic.class);
-                startActivity(intent);
-            }
+        imageview.setOnClickListener(v -> {
+            Intent intent = new Intent(CreatorProfile.this, UploadProfilePic.class);
+            startActivity(intent);
         });
 
         authProfile = FirebaseAuth.getInstance();
@@ -72,6 +78,25 @@ public class CreatorProfile extends AppCompatActivity {
 
         }
     }
+
+    private void swipeToRefresh() {
+        //Look for swipe container
+        swipeContainer = findViewById(R.id.swipeContainer);
+
+        //set up refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(() -> {
+            //code to refresh goes here.
+            startActivity(getIntent());
+            finish();
+            overridePendingTransition(0,0);
+            swipeContainer.setRefreshing(false);
+        });
+
+        //Configure refresh colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+    }
+
+
     //Users coming to creator profile after successful registration
     private void checkifEmailVerified(FirebaseUser firebaseUser) {
         if (!firebaseUser.isEmailVerified()){
@@ -86,14 +111,11 @@ public class CreatorProfile extends AppCompatActivity {
         builder.setMessage("Please verify your email now. You can not login without email verification next time.");
 
         //open email app if user clicks/taps "continue"
-        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //TO EMAIL APP ON A NEW WINDOW
-                startActivity(intent);
-            }
+        builder.setPositiveButton("Continue", (dialog, which) -> {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //TO EMAIL APP ON A NEW WINDOW
+            startActivity(intent);
         });
 
         //create alert box
@@ -119,7 +141,7 @@ public class CreatorProfile extends AppCompatActivity {
                     gender = readUserDetails.gender;
                     mobile = readUserDetails.mobile;
 
-                    textViewWelcome.setText("Welcome, " + fullName + "!");
+                    textViewWelcome.setText(getString(R.string.welcome_head_profile, fullName));
                     textViewFullName.setText(fullName);
                     textViewEmail.setText(email);
                     textViewDoB.setText(doB);
@@ -161,7 +183,10 @@ public class CreatorProfile extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.menu_refresh){
+        if (id == android.R.id.home){
+            NavUtils.navigateUpFromSameTask(CreatorProfile.this);
+
+        } else if (id == R.id.menu_refresh){
             //refresh activity
             startActivity(getIntent());
             finish();
@@ -172,16 +197,21 @@ public class CreatorProfile extends AppCompatActivity {
             startActivity(intent);
             finish();
 
-        } /*else if (id == R.id.menu_update_email) {
+        } else if (id == R.id.menu_update_email) {
             Intent intent = new Intent(CreatorProfile.this, UpdateEmail.class);
             startActivity(intent);
+            finish();
+
         } else if (id == R.id.menu_change_password) {
             Intent intent = new Intent(CreatorProfile.this, ChangePassword.class);
             startActivity(intent);
+            finish();
+
         } else if (id == R.id.menu_delete_profile) {
             Intent intent = new Intent(CreatorProfile.this, DeleteProfile.class);
             startActivity(intent);
-        }*/else if (id == R.id.menu_logout) {
+
+        } else if (id == R.id.menu_logout) {
             authProfile.signOut();
             Toast.makeText(this, "Logged Out", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(CreatorProfile.this, MainActivity.class);

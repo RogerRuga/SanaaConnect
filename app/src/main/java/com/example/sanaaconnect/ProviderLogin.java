@@ -3,88 +3,201 @@ package com.example.sanaaconnect;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ProviderLogin extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword;
+    private EditText editTextLoginEmail, editTextLoginPwd;
+    private ProgressBar progressBar;
+    private FirebaseAuth authProfile;
+    private static final String TAG = "ProviderLogin";
 
-    Button signIn;
-
-    TextView signUp;
-
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_creator_welcome_page);
+        setContentView(R.layout.activity_provider_login);
 
-        editTextEmail = findViewById(R.id.email);
-        editTextPassword = findViewById(R.id.password);
-        signIn = findViewById(R.id.sign_in);
-        signUp = findViewById(R.id.sign_up);
+        editTextLoginEmail = findViewById(R.id.editText_login_email);
+        editTextLoginPwd = findViewById(R.id.editText_login_pwd);
+        progressBar = findViewById(R.id.progressBar);
 
-        signUp.setOnClickListener(new View.OnClickListener() {
+        authProfile = FirebaseAuth.getInstance();
+
+        //reset password
+        TextView textViewLinkResetPwd = findViewById(R.id.textView_forgot_password);
+        textViewLinkResetPwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProviderLogin.this, ProviderRegistration.class);
+                Toast.makeText(ProviderLogin.this, "You can reset your password now!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(ProviderLogin.this, ForgotPassword.class));
+            }
+        });
+
+        //Register
+        TextView textViewLinkRegister = findViewById(R.id.textView_register_link);
+        textViewLinkRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ProviderLogin.this, "You can reset your password now!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(ProviderLogin.this, ProviderRegistration.class));
+            }
+        });
+
+
+
+
+        //show hide password
+        ImageView imageViewShowHidePwd = findViewById(R.id.imageView_show_hide_pwd);
+        imageViewShowHidePwd.setImageResource(R.drawable.ic_show_pwd);
+        imageViewShowHidePwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (editTextLoginPwd.getTransformationMethod().equals(HideReturnsTransformationMethod.getInstance())){
+                    //If password is visible then hide it
+                    editTextLoginPwd.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    //change icon
+                    imageViewShowHidePwd.setImageResource(R.drawable.ic_show_pwd);
+                } else {
+                    editTextLoginPwd.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    imageViewShowHidePwd.setImageResource(R.drawable.ic_hide_pwd);
+
+                }
+            }
+        });
+
+        //Login User
+        Button buttonLogin = findViewById(R.id.button_login);
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String textEmail = editTextLoginEmail.getText().toString();
+                String textPwd = editTextLoginPwd.getText().toString();
+
+                if(TextUtils.isEmpty(textEmail)){
+                    Toast.makeText(ProviderLogin.this, "Please enter your email", Toast.LENGTH_LONG).show();
+                    editTextLoginEmail.setError("Email is required!");
+                    editTextLoginEmail.requestFocus();
+
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()) {
+                    Toast.makeText(ProviderLogin.this, "Please re-enter your email", Toast.LENGTH_LONG).show();
+                    editTextLoginEmail.setError("Valid email is required!");
+                    editTextLoginEmail.requestFocus();
+
+                } else if (TextUtils.isEmpty(textPwd)){
+                    Toast.makeText(ProviderLogin.this, "Please enter your password", Toast.LENGTH_LONG).show();
+                    editTextLoginPwd.setError("Password is required!");
+                    editTextLoginPwd.requestFocus();
+                } else {
+                    progressBar.setVisibility(View.VISIBLE);
+                    loginUser(textEmail, textPwd);
+                }
+            }
+        });
+    }
+
+    private void loginUser(String email, String pwd) {
+        authProfile.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(ProviderLogin.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+
+                    //get instance of current user
+                    FirebaseUser firebaseUser = authProfile.getCurrentUser();
+
+                    //check if email is verified before user can access their profile
+                    if (firebaseUser.isEmailVerified()){
+                        Toast.makeText(ProviderLogin.this, "You are logged in", Toast.LENGTH_SHORT).show();
+
+                        //open user profile
+                        //Start the Creator Profile Activity
+                        startActivity(new Intent( ProviderLogin.this, ProviderProfile.class));
+                        finish();
+
+                    } else {
+                        firebaseUser.sendEmailVerification();
+                        authProfile.signOut(); //sign out user
+                        showAlertDialog();
+                    }
+
+                } else {
+                    try{
+                        throw task.getException();
+                    } catch(FirebaseAuthInvalidUserException e) {
+                        editTextLoginEmail.setError("User does not exist or is no longer valid. Please register again");
+                        editTextLoginEmail.requestFocus();
+                    } catch (FirebaseAuthInvalidCredentialsException e){
+                        editTextLoginEmail.setError("Invalid credentials. Kindly, check and re-enter.");
+                        editTextLoginEmail.requestFocus();
+                    } catch (Exception e){
+                        Log.e(TAG, e.getMessage());
+                        Toast.makeText(ProviderLogin.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void showAlertDialog() {
+        //setup alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProviderLogin.this);
+        builder.setTitle("Email Not Verified");
+        builder.setMessage("Please verify your email now. You can not login without email verification.");
+
+        //open email app if user clicks/taps "continue"
+        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //TO EMAIL APP ON A NEW WINDOW
                 startActivity(intent);
-                finish();
             }
         });
 
-        signIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email, password;
-                email = String.valueOf(editTextEmail.getText());
-                password = String.valueOf(editTextPassword.getText());
+        //create alert box
+        AlertDialog alertDialog = builder.create();
 
+        //show alert dialog
+        alertDialog.show();
+    }
+    // check if user is already logged in. It takes them directly to the creator profile in such cases
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (authProfile.getCurrentUser() != null){
+            Toast.makeText(this, "Already Looged In!", Toast.LENGTH_SHORT).show();
 
-                if (TextUtils.isEmpty(email)){
-                    Toast.makeText(ProviderLogin.this, "Enter Email", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            //Start the Creator Profile Activity
+            startActivity(new Intent( ProviderLogin.this, ProviderProfile.class));
+            finish();
+        }
+        else{
+            Toast.makeText(this, "You can login now!", Toast.LENGTH_SHORT).show();
 
-                if (TextUtils.isEmpty(password)){
-                    Toast.makeText(ProviderLogin.this, "Enter Password", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                firebaseAuth.signInWithEmailAndPassword(email,password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()){
-                                    Toast.makeText(ProviderLogin.this, "LogIn Successful", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(ProviderLogin.this, ServicesHompage.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else {
-                                    Toast.makeText(ProviderLogin.this, "Authentication Failed.", Toast.LENGTH_LONG).show();
-
-                                }
-                            }
-                        });
-            }
-        });
-
+        }
     }
 }

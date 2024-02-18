@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreatorWelcomePage"
+    tools:context=".ProviderWelcomePage"
     android:background="@color/light_gray">
 
     <RelativeLayout
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView_main_head"
-            android:text="Elevate Your Craft. Get Started Today"
+            android:text="Your Vision, Our Talent. Get Started Today"
             android:textStyle="bold"
             android:textAlignment="center"
             android:layout_marginTop="10dp"

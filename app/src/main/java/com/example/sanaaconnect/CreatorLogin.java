@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,14 +47,25 @@ public class CreatorLogin extends AppCompatActivity {
         authProfile = FirebaseAuth.getInstance();
 
         //reset password
-        Button buttonForgotPassword = findViewById(R.id.button_forgot_password);
-        buttonForgotPassword.setOnClickListener(new View.OnClickListener() {
+        TextView textViewLinkResetPwd = findViewById(R.id.textView_forgot_password);
+        textViewLinkResetPwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(CreatorLogin.this, "You can reset your password now!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(CreatorLogin.this, ForgotPassword.class));
             }
         });
+
+        //Register
+        TextView textViewLinkRegister = findViewById(R.id.textView_register_link);
+        textViewLinkRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(CreatorLogin.this, "You can reset your password now!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(CreatorLogin.this, RegisterCreator.class));
+            }
+        });
+
 
 
 
